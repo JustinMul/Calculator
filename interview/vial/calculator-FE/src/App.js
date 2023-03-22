@@ -6,36 +6,67 @@ import React, { useState } from "react";
 
 const btnValues = [
   ['M+', "M-", "MR", "MC",],
-  ["C", "√", "%", "/"],
   ['HIS ', '^', '+-',''],
+  ["C", "√", "%", "/"],
+  
   [7, 8, 9, "X"],
   [4, 5, 6, "-"],
   [1, 2, 3, "+"],
   [0, ".", "="],
 ];
 
+const toLocaleString = (num) =>
+  String(num).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, "$1 ");
+
+const removeSpaces = (num) => num.toString().replace(/\s/g, "");
+
 
 const App = () => {
-
+ 
   let [calc, setCalc] = useState({
     sign: "",
     num: 0,
     res: 0,
   });
+ 
+  let [calcMem, setCalcMem] = useState('')
 
+
+  const memoryHandler = (e) => {
+    e.preventDefault();
+    console.log('nice', e.target.innerHTML)
+    if (e.target.innerHTML === "M+") { 
+      setCalcMem(calc.num/1 !== 0 ? calcMem+=calc.num/1  : calcMem+=calc.res/1 )
+    }
+    if (e.target.innerHTML === "M-") { 
+      setCalcMem(calc.num/1 !== 0 ? calcMem-=calc.num/1  : calcMem-=calc.res/1 )
+    }
+    if (e.target.innerHTML === "MC") { 
+      setCalcMem(0)
+    }
+    if (e.target.innerHTML === "MR") { 
+      console.log('this is calc', calc)
+     setCalc({ sign: calc.sign,
+     num: calcMem/1,
+     res: calc.res,})
+    }
+
+    
+  }
+  
   const numClickHandler = (e) => {
     e.preventDefault();
     const value = e.target.innerHTML;
 
-    if (calc.num.length < 16) {
+    if (removeSpaces(calc.num).length < 16) {
       setCalc({
         ...calc,
         num:
           calc.num === 0 && value === "0"
             ? "0"
-            : calc.num % 1 === 0
-            ? Number(calc.num + value)
-            : calc.num + value,
+            : removeSpaces(calc.num) % 1 === 0
+            ? toLocaleString(Number(removeSpaces(calc.num + value)))
+            : toLocaleString(calc.num + value),
         res: !calc.sign ? 0 : calc.res,
       });
     }
@@ -95,7 +126,7 @@ const App = () => {
       sign: "",
     });
   };
-  
+
   const percentClickHandler = () => {
     let num = calc.num ? parseFloat(calc.num) : 0;
     let res = calc.res ? parseFloat(calc.res) : 0;
@@ -117,6 +148,7 @@ const App = () => {
     });
   };
 
+ 
 
   
   return (
@@ -131,7 +163,8 @@ const App = () => {
                 className={btn === "=" ? "equals" : ""}
                 value={btn}
                 onClick={
-                  btn === "C"
+                 
+                    btn === "C"
                     ? resetClickHandler
                     : btn === "+-"
                     ? invertClickHandler
@@ -143,7 +176,14 @@ const App = () => {
                     ? signClickHandler
                     : btn === "."
                     ? commaClickHandler
+                    : btn === 'M+' || btn === "M-" || btn === "MC" || btn === "MR"
+                    ? memoryHandler
+                    
                     : numClickHandler
+
+                    
+
+                   
                 }
               />
             );
