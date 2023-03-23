@@ -8,7 +8,6 @@ const btnValues = [
   ['M+', "M-", "MR", "MC",],
   ['HIS ', '^', '+-',''],
   ["C", "√", "%", "/"],
-  
   [7, 8, 9, "X"],
   [4, 5, 6, "-"],
   [1, 2, 3, "+"],
@@ -23,18 +22,20 @@ const removeSpaces = (num) => num.toString().replace(/\s/g, "");
 
 const App = () => {
  
+ 
   let [calc, setCalc] = useState({
     sign: "",
     num: 0,
     res: 0,
   });
- 
+  
+  // state to manage calc memory functions
   let [calcMem, setCalcMem] = useState('')
 
 
   const memoryHandler = (e) => {
     e.preventDefault();
-    console.log('nice', e.target.innerHTML)
+   
     if (e.target.innerHTML === "M+") { 
       setCalcMem(calc.num/1 !== 0 ? calcMem+=calc.num/1  : calcMem+=calc.res/1 )
     }
@@ -45,19 +46,19 @@ const App = () => {
       setCalcMem(0)
     }
     if (e.target.innerHTML === "MR") { 
-      console.log('this is calc', calc)
      setCalc({ sign: calc.sign,
      num: calcMem/1,
-     res: calc.res,})
+     res: calcMem/1,})
+
     }
 
     
   }
   
+  // used when a number is typed in calc 
   const numClickHandler = (e) => {
     e.preventDefault();
     const value = e.target.innerHTML;
-
     if (removeSpaces(calc.num).length < 16) {
       setCalc({
         ...calc,
@@ -66,13 +67,15 @@ const App = () => {
             ? "0"
             : removeSpaces(calc.num) % 1 === 0
             ? toLocaleString(Number(removeSpaces(calc.num + value)))
-            : toLocaleString(calc.num + value),
+            : toLocaleString(calc.num/1 + value/1),
         res: !calc.sign ? 0 : calc.res,
       });
     }
   };
 
-  const commaClickHandler = (e) => {
+  // used when decimal is clicked
+  const decimalClickHandler = (e) => {
+    console.log('this is decimal')
     e.preventDefault();
     const value = e.target.innerHTML;
   
@@ -82,35 +85,52 @@ const App = () => {
     });
   };
   
+  // used when a sign is clicked
   const signClickHandler = (e) => {
+    
     e.preventDefault();
     const value = e.target.innerHTML;
-  
-    setCalc({
-      ...calc,
-      sign: value,
-      res: !calc.res && calc.num ? calc.num : calc.res,
-      num: 0,
-    });
+    if (e.target.innerHTML === '√') {
+      setCalc({...calc, res: calc.num ? Math.sqrt(calc.num) : Math.sqrt(calc.res),
+      sign: "",
+      num: 0,})
+    }
+    else{
+      setCalc({
+        ...calc,
+        sign: value,
+        res: !calc.res && calc.num ? calc.num : calc.res,
+        num: 0,
+      });
+    }
+   
+    
   };
 
   const equalsClickHandler = () => {
+    console.log('this is equal')
     if (calc.sign && calc.num) {
+      console.log('do we enter? ')
       const math = (a, b, sign) =>
+        
         sign === "+"
           ? a + b
           : sign === "-"
           ? a - b
           : sign === "X"
           ? a * b
-          : a / b;
-  
+          : sign === '/'
+          ? a / b
+          : sign === '√'
+          ? Math.sqrt(a)
+          : a**b
+      
       setCalc({
         ...calc,
         res:
           calc.num === "0" && calc.sign === "/"
             ? "Can't divide with 0"
-            : math(Number(calc.res), Number(calc.num), calc.sign),
+            : math(Number(removeSpaces(calc.res)), Number(removeSpaces(calc.num)), calc.sign),
         sign: "",
         num: 0,
       });
@@ -172,10 +192,10 @@ const App = () => {
                     ? percentClickHandler
                     : btn === "="
                     ? equalsClickHandler
-                    : btn === "/" || btn === "X" || btn === "-" || btn === "+"
+                    : btn === "/" || btn === "X" || btn === "-" || btn === "+" || btn === '^' || btn ===  '√'
                     ? signClickHandler
                     : btn === "."
-                    ? commaClickHandler
+                    ? decimalClickHandler
                     : btn === 'M+' || btn === "M-" || btn === "MC" || btn === "MR"
                     ? memoryHandler
                     
