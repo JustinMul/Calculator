@@ -1,0 +1,14 @@
+.header {
+  padding: 15px;
+  position: fixed;
+  /* Stick it to the top */
+  top: 0; 
+  left: 0;
+  text-align: center;
+  display: flex;
+  justify-content: left;
+  background: #1abc9c;
+  color: white;
+  font-size: 15px;
+  width: 1000%;
+}

@@ -2,13 +2,14 @@ import Wrapper from "./components/Wrapper";
 import Screen from "./components/Screen";
 import ButtonBox from "./components/ButtonBox";
 import Button from "./components/Button";
+import NavBar from "./components/NavBar";
 import React, { useState } from "react";
 
 const btnValues = [
   ['M+', "M-", "MR", "MC",],
-  ['HIS ', '^', '+-',''],
-  ["C", "√", "%", "/"],
-  [7, 8, 9, "X"],
+  ['HIS ', '^', '+-','%'],
+  ["C", "CE", "√", "/"],
+  [7, 8, 9, "x"],
   [4, 5, 6, "-"],
   [1, 2, 3, "+"],
   [0, ".", "="],
@@ -22,13 +23,15 @@ const removeSpaces = (num) => num.toString().replace(/\s/g, "");
 
 const App = () => {
  
- 
   let [calc, setCalc] = useState({
     sign: "",
     num: 0,
     res: 0,
   });
   
+  let [dispResult, setDispResult] = useState('')
+
+  console.log('this is calc,', calc)
   // state to manage calc memory functions
   let [calcMem, setCalcMem] = useState('')
 
@@ -67,7 +70,7 @@ const App = () => {
             ? "0"
             : removeSpaces(calc.num) % 1 === 0
             ? toLocaleString(Number(removeSpaces(calc.num + value)))
-            : toLocaleString(calc.num/1 + value/1),
+            : toLocaleString(calc.num + value),
         res: !calc.sign ? 0 : calc.res,
       });
     }
@@ -87,10 +90,21 @@ const App = () => {
   
   // used when a sign is clicked
   const signClickHandler = (e) => {
-    
+    // need to add the order of operations logic here 3
+
+    const symbolPriority = {
+      '^':3,
+      '√':3,
+      '/':2,
+      'X':2,
+      '+':1,
+      '-':1
+    }
+
     e.preventDefault();
     const value = e.target.innerHTML;
     if (e.target.innerHTML === '√') {
+      console.log('enter?')
       setCalc({...calc, res: calc.num ? Math.sqrt(calc.num) : Math.sqrt(calc.res),
       sign: "",
       num: 0,})
@@ -108,33 +122,50 @@ const App = () => {
   };
 
   const equalsClickHandler = () => {
-    console.log('this is equal')
-    if (calc.sign && calc.num) {
-      console.log('do we enter? ')
-      const math = (a, b, sign) =>
-        
-        sign === "+"
-          ? a + b
-          : sign === "-"
-          ? a - b
-          : sign === "X"
-          ? a * b
-          : sign === '/'
-          ? a / b
-          : sign === '√'
-          ? Math.sqrt(a)
-          : a**b
-      
-      setCalc({
-        ...calc,
-        res:
-          calc.num === "0" && calc.sign === "/"
-            ? "Can't divide with 0"
-            : math(Number(removeSpaces(calc.res)), Number(removeSpaces(calc.num)), calc.sign),
-        sign: "",
-        num: 0,
-      });
+    // tmp varible used to conver input so eval can read
+    let tmpResult = dispResult
+   
+    if (tmpResult.includes('x')){
+      tmpResult = tmpResult.replace('x', '*')
     }
+    if (tmpResult.includes('^')){
+      tmpResult = tmpResult.replace('^', '**')
+    }
+    // if (tmpResult.includes('√')){
+    //   tmpResult = tmpResult.replace('√', '**')
+    // }
+
+
+    
+    let ans = eval(tmpResult)
+    setDispResult(ans)
+    // console.log('this is equal')
+    // if (calc.sign && calc.num) {
+    //   console.log('do we enter? ')
+    //   const math = (a, b, sign) =>
+        
+    //     sign === "+"
+    //       ? a + b
+    //       : sign === "-"
+    //       ? a - b
+    //       : sign === "X"
+    //       ? a * b
+    //       : sign === '/'
+    //       ? a / b
+    //       : sign === '√'
+    //       ? Math.sqrt(a)
+    //       : a**b
+      
+    //   setCalc({
+    //     ...calc,
+    //     res:
+    //       calc.num === "0" && calc.sign === "/"
+    //         ? "Can't divide with 0"
+    //         : math(Number(removeSpaces(calc.res)), Number(removeSpaces(calc.num)), calc.sign),
+    //     sign: "",
+    //     num: 0,
+    //   });
+    // }
   };
   
 
@@ -160,57 +191,75 @@ const App = () => {
   };
 
   const resetClickHandler = () => {
-    setCalc({
-      ...calc,
-      sign: "",
-      num: 0,
-      res: 0,
-    });
+    // setCalc({
+    //   ...calc,
+    //   sign: "",
+    //   num: 0,
+    //   res: 0,
+    // });
+
+    setDispResult('')
   };
 
+  const deleteClickHandler  = () => {
+    setDispResult(dispResult.slice(0, -1))
+  }
  
+  const dispResultAppend = (e) => {
+    setDispResult(dispResult+e.target.innerHTML)
+  }
+
 
   
   return (
-    <Wrapper>
-      <Screen value={calc.num ? calc.num : calc.res} />
-      <ButtonBox>
-      {
-          btnValues.flat().map((btn, i) => {
-            return (
-              <Button
-                key={i}
-                className={btn === "=" ? "equals" : ""}
-                value={btn}
-                onClick={
-                 
-                    btn === "C"
-                    ? resetClickHandler
-                    : btn === "+-"
-                    ? invertClickHandler
-                    : btn === "%"
-                    ? percentClickHandler
-                    : btn === "="
-                    ? equalsClickHandler
-                    : btn === "/" || btn === "X" || btn === "-" || btn === "+" || btn === '^' || btn ===  '√'
-                    ? signClickHandler
-                    : btn === "."
-                    ? decimalClickHandler
-                    : btn === 'M+' || btn === "M-" || btn === "MC" || btn === "MR"
-                    ? memoryHandler
-                    
-                    : numClickHandler
+    <>
+      <NavBar></NavBar>
+      <Wrapper>
+      <Screen value={dispResult ? dispResult : 0} />
+        {/* <Screen value={calc.num ? calc.num : calc.res} /> */}
+        <ButtonBox>
+        {
+            btnValues.flat().map((btn, i) => {
+              return (
+                <Button
+                  key={i}
+                  className={btn === "=" ? "equals" : ""}
+                  value={btn}
+                  onClick={
+                  
+                      btn === "C"
+                      ? resetClickHandler
+                      : btn === "+-"
+                      ? invertClickHandler
+                      : btn === "%"
+                      ? percentClickHandler
+                      : btn === "="
+                      ? equalsClickHandler
+                      : btn ==='CE'
+                      ? deleteClickHandler 
+                      : dispResultAppend 
+
+                      // : btn === "/" || btn === "X" || btn === "-" || btn === "+" || btn === '^' || btn ===  '√'
+                      // ? signClickHandler
+                      // : btn === "."
+                      // ? decimalClickHandler
+                      // : btn === 'M+' || btn === "M-" || btn === "MC" || btn === "MR"
+                      // ? memoryHandler
+                      
+                      // : numClickHandler
+
+                      
 
                     
+                  }
+                />
+              );
+            })
+          }
+        </ButtonBox>
+      </Wrapper>
 
-                   
-                }
-              />
-            );
-          })
-        }
-      </ButtonBox>
-    </Wrapper>
+    </>
   );
 };
 
