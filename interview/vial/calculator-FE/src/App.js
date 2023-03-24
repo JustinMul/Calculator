@@ -7,7 +7,7 @@ import React, { useState } from "react";
 
 const btnValues = [
   ['M+', "M-", "MR", "MC",],
-  ['HIS ', '^', '+-','%'],
+  ['HIS', '^', '+-','%'],
   ["C", "CE", "√", "/"],
   [7, 8, 9, "x"],
   [4, 5, 6, "-"],
@@ -20,6 +20,7 @@ const App = () => {
   let [currentNum, setCurrentNum] = useState('')
   let [dispResult, setDispResult] = useState('')
   let [calcMem, setCalcMem] = useState('')
+  let [history, setHistory] = useState([])
 
   const memoryHandler = (e) => {
     e.preventDefault();
@@ -36,13 +37,20 @@ const App = () => {
     if (e.target.innerHTML === "MR") { 
       setDispResult(dispResult+String(calcMem))
     }
+  }
+
+  const historyHandler = () => {
+    // need to show this on the page somewhere maybe a pop up module or something
     
   }
 
   const equalsClickHandler = () => {
-    // tmp varible used to conver input so eval can read
+    // tmp varible used to convert input so eval can read
     let tmpResult = dispResult
-   
+
+    // anytime user hits enter it's saved to history should i make all or just 1 instance? 
+    // setHistory(history + ' , ' + tmpResult )
+
     if (tmpResult.includes('x')){
       tmpResult = tmpResult.replace('x', '*')
     }
@@ -51,8 +59,10 @@ const App = () => {
     }
 
     try {
-      setDispResult(eval(tmpResult))
-      setCurrentNum(eval(tmpResult))
+      let ans = eval(tmpResult)
+      setDispResult(ans)
+      setCurrentNum(ans)
+      setHistory([...history, tmpResult + ' = ' + ans])
     } catch (error) {
       setDispResult("Error")
     }
@@ -124,8 +134,10 @@ const App = () => {
                       ? equalsClickHandler
                       : btn ==='CE'
                       ? deleteClickHandler 
-                      : btn == 'MR' || btn == 'MC' || btn == 'M+' || btn == 'M-' 
+                      : btn === 'MR' || btn === 'MC' || btn === 'M+' || btn === 'M-' 
                       ? memoryHandler
+                      : btn === "HIS"
+                      ? historyHandler
                       : dispResultAppend 
 
                   }
