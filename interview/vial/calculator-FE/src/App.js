@@ -16,42 +16,28 @@ const btnValues = [
 ];
 
 const App = () => {
- 
-  let [calc, setCalc] = useState({
-    sign: "",
-    num: 0,
-    res: 0,
-  });
   
   let [currentNum, setCurrentNum] = useState('')
   let [dispResult, setDispResult] = useState('')
-
-
   let [calcMem, setCalcMem] = useState('')
-
 
   const memoryHandler = (e) => {
     e.preventDefault();
    
     if (e.target.innerHTML === "M+") { 
-      setCalcMem(calc.num/1 !== 0 ? calcMem+=calc.num/1  : calcMem+=calc.res/1 )
+      setCalcMem(calcMem=Number(calcMem) + Number (currentNum))
     }
     if (e.target.innerHTML === "M-") { 
-      setCalcMem(calc.num/1 !== 0 ? calcMem-=calc.num/1  : calcMem-=calc.res/1 )
+      setCalcMem(calcMem=Number(calcMem) - Number (currentNum))
     }
     if (e.target.innerHTML === "MC") { 
       setCalcMem(0)
     }
     if (e.target.innerHTML === "MR") { 
-     setCalc({ sign: calc.sign,
-     num: calcMem/1,
-     res: calcMem/1,})
-
+      setDispResult(dispResult+String(calcMem))
     }
-
     
   }
-
 
   const equalsClickHandler = () => {
     // tmp varible used to conver input so eval can read
@@ -64,22 +50,16 @@ const App = () => {
       tmpResult = tmpResult.replace('^', '**')
     }
 
-
     try {
       setDispResult(eval(tmpResult))
       setCurrentNum(eval(tmpResult))
     } catch (error) {
       setDispResult("Error")
     }
-    
   };
   
-
-
-
   const specialClickHandler = (e) => {
     let value = e.target.innerHTML
-    
     let trimLen = currentNum.length
  
     let tmpCurr = String(dispResult).slice(0,-trimLen)
@@ -88,7 +68,6 @@ const App = () => {
       setCurrentNum(String(currentNum)/100)
     }
     else if(value === '+-'){ 
-      console.log('do we enter? ')
       setDispResult(tmpCurr+currentNum*-1)
       setCurrentNum(String(currentNum)*-1)
     }
@@ -96,12 +75,9 @@ const App = () => {
       setDispResult(tmpCurr+Math.sqrt(currentNum))
       setCurrentNum(String(Math.sqrt(currentNum)))
     }
-   
-
   };
 
   const resetClickHandler = () => {
-
     setDispResult('')
     setCurrentNum('')
   };
@@ -115,7 +91,6 @@ const App = () => {
     e.preventDefault();
     let value = e.target.innerHTML
     setDispResult(dispResult+value)
-    console.log('this is the outcome', isNaN(value))
     if(!isNaN(value) || value ==='.'){
       setCurrentNum(currentNum+value)
     }
@@ -123,9 +98,6 @@ const App = () => {
       setCurrentNum('')
     }
    
-
-
-
   }
 
   
@@ -152,6 +124,8 @@ const App = () => {
                       ? equalsClickHandler
                       : btn ==='CE'
                       ? deleteClickHandler 
+                      : btn == 'MR' || btn == 'MC' || btn == 'M+' || btn == 'M-' 
+                      ? memoryHandler
                       : dispResultAppend 
 
                   }
