@@ -134,7 +134,6 @@ const App = () => {
       <NavBar></NavBar>
       <Wrapper>
       <Screen value={dispResult ? dispResult : 0} />
-        {/* <Screen value={calc.num ? calc.num : calc.res} /> */}
         <ButtonBox>
         {
             btnValues.flat().map((btn, i) => {
@@ -155,18 +154,6 @@ const App = () => {
                       ? deleteClickHandler 
                       : dispResultAppend 
 
-                      // : btn === "/" || btn === "X" || btn === "-" || btn === "+" || btn === '^' || btn ===  '√'
-                      // ? signClickHandler
-                      // : btn === "."
-                      // ? decimalClickHandler
-                      // : btn === 'M+' || btn === "M-" || btn === "MC" || btn === "MR"
-                      // ? memoryHandler
-                      
-                      // : numClickHandler
-
-                      
-
-                    
                   }
                 />
               );
