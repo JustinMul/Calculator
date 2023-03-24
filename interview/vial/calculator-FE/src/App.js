@@ -15,12 +15,6 @@ const btnValues = [
   [0, ".", "="],
 ];
 
-const toLocaleString = (num) =>
-  String(num).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, "$1 ");
-
-const removeSpaces = (num) => num.toString().replace(/\s/g, "");
-
-
 const App = () => {
  
   let [calc, setCalc] = useState({
@@ -29,10 +23,10 @@ const App = () => {
     res: 0,
   });
   
+  let [currentNum, setCurrentNum] = useState('')
   let [dispResult, setDispResult] = useState('')
 
-  console.log('this is calc,', calc)
-  // state to manage calc memory functions
+
   let [calcMem, setCalcMem] = useState('')
 
 
@@ -57,69 +51,7 @@ const App = () => {
 
     
   }
-  
-  // used when a number is typed in calc 
-  const numClickHandler = (e) => {
-    e.preventDefault();
-    const value = e.target.innerHTML;
-    if (removeSpaces(calc.num).length < 16) {
-      setCalc({
-        ...calc,
-        num:
-          calc.num === 0 && value === "0"
-            ? "0"
-            : removeSpaces(calc.num) % 1 === 0
-            ? toLocaleString(Number(removeSpaces(calc.num + value)))
-            : toLocaleString(calc.num + value),
-        res: !calc.sign ? 0 : calc.res,
-      });
-    }
-  };
 
-  // used when decimal is clicked
-  const decimalClickHandler = (e) => {
-    console.log('this is decimal')
-    e.preventDefault();
-    const value = e.target.innerHTML;
-  
-    setCalc({
-      ...calc,
-      num: !calc.num.toString().includes(".") ? calc.num + value : calc.num,
-    });
-  };
-  
-  // used when a sign is clicked
-  const signClickHandler = (e) => {
-    // need to add the order of operations logic here 3
-
-    const symbolPriority = {
-      '^':3,
-      '√':3,
-      '/':2,
-      'X':2,
-      '+':1,
-      '-':1
-    }
-
-    e.preventDefault();
-    const value = e.target.innerHTML;
-    if (e.target.innerHTML === '√') {
-      console.log('enter?')
-      setCalc({...calc, res: calc.num ? Math.sqrt(calc.num) : Math.sqrt(calc.res),
-      sign: "",
-      num: 0,})
-    }
-    else{
-      setCalc({
-        ...calc,
-        sign: value,
-        res: !calc.res && calc.num ? calc.num : calc.res,
-        num: 0,
-      });
-    }
-   
-    
-  };
 
   const equalsClickHandler = () => {
     // tmp varible used to conver input so eval can read
@@ -131,84 +63,70 @@ const App = () => {
     if (tmpResult.includes('^')){
       tmpResult = tmpResult.replace('^', '**')
     }
-    // if (tmpResult.includes('√')){
-    //   tmpResult = tmpResult.replace('√', '**')
-    // }
 
 
+    try {
+      setDispResult(eval(tmpResult))
+      setCurrentNum(eval(tmpResult))
+    } catch (error) {
+      setDispResult("Error")
+    }
     
-    let ans = eval(tmpResult)
-    setDispResult(ans)
-    // console.log('this is equal')
-    // if (calc.sign && calc.num) {
-    //   console.log('do we enter? ')
-    //   const math = (a, b, sign) =>
-        
-    //     sign === "+"
-    //       ? a + b
-    //       : sign === "-"
-    //       ? a - b
-    //       : sign === "X"
-    //       ? a * b
-    //       : sign === '/'
-    //       ? a / b
-    //       : sign === '√'
-    //       ? Math.sqrt(a)
-    //       : a**b
-      
-    //   setCalc({
-    //     ...calc,
-    //     res:
-    //       calc.num === "0" && calc.sign === "/"
-    //         ? "Can't divide with 0"
-    //         : math(Number(removeSpaces(calc.res)), Number(removeSpaces(calc.num)), calc.sign),
-    //     sign: "",
-    //     num: 0,
-    //   });
-    // }
   };
   
 
-  const invertClickHandler = () => {
-    setCalc({
-      ...calc,
-      num: calc.num ? calc.num * -1 : 0,
-      res: calc.res ? calc.res * -1 : 0,
-      sign: "",
-    });
-  };
 
-  const percentClickHandler = () => {
-    let num = calc.num ? parseFloat(calc.num) : 0;
-    let res = calc.res ? parseFloat(calc.res) : 0;
-  
-    setCalc({
-      ...calc,
-      num: (num /= Math.pow(100, 1)),
-      res: (res /= Math.pow(100, 1)),
-      sign: "",
-    });
+
+  const specialClickHandler = (e) => {
+    let value = e.target.innerHTML
+    
+    let trimLen = currentNum.length
+ 
+    let tmpCurr = String(dispResult).slice(0,-trimLen)
+    if (value === '%'){
+      setDispResult(tmpCurr+currentNum/100)
+      setCurrentNum(String(currentNum)/100)
+    }
+    else if(value === '+-'){ 
+      console.log('do we enter? ')
+      setDispResult(tmpCurr+currentNum*-1)
+      setCurrentNum(String(currentNum)*-1)
+    }
+    else {
+      setDispResult(tmpCurr+Math.sqrt(currentNum))
+      setCurrentNum(String(Math.sqrt(currentNum)))
+    }
+   
+
   };
 
   const resetClickHandler = () => {
-    // setCalc({
-    //   ...calc,
-    //   sign: "",
-    //   num: 0,
-    //   res: 0,
-    // });
 
     setDispResult('')
+    setCurrentNum('')
   };
 
   const deleteClickHandler  = () => {
-    setDispResult(dispResult.slice(0, -1))
+    setDispResult(String(dispResult).slice(0, -1))
+    setCurrentNum(String(currentNum).slice(0, -1))
   }
  
   const dispResultAppend = (e) => {
-    setDispResult(dispResult+e.target.innerHTML)
-  }
+    e.preventDefault();
+    let value = e.target.innerHTML
+    setDispResult(dispResult+value)
+    console.log('this is the outcome', isNaN(value))
+    if(!isNaN(value) || value ==='.'){
+      setCurrentNum(currentNum+value)
+    }
+    if(value === '+' || value === '-' || value === '/' || value === 'x'){
+      setCurrentNum('')
+    }
+   
 
+
+
+  }
 
   
   return (
@@ -229,10 +147,8 @@ const App = () => {
                   
                       btn === "C"
                       ? resetClickHandler
-                      : btn === "+-"
-                      ? invertClickHandler
-                      : btn === "%"
-                      ? percentClickHandler
+                      : btn === "%" || btn === '+-' || btn === '√'
+                      ? specialClickHandler
                       : btn === "="
                       ? equalsClickHandler
                       : btn ==='CE'
