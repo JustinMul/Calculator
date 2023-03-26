@@ -3,7 +3,9 @@ import Screen from "./components/Screen";
 import ButtonBox from "./components/ButtonBox";
 import Button from "./components/Button";
 import NavBar from "./components/NavBar";
+import Modal from "./components/Modal";
 import React, { useState } from "react";
+
 
 const btnValues = [
   ['M+', "M-", "MR", "MC",],
@@ -21,6 +23,7 @@ const App = () => {
   let [dispResult, setDispResult] = useState('')
   let [calcMem, setCalcMem] = useState('')
   let [history, setHistory] = useState([])
+  const [historyModal, setHistoryModal]  = useState(false)
 
   const memoryHandler = (e) => {
     e.preventDefault();
@@ -41,31 +44,36 @@ const App = () => {
 
   const historyHandler = () => {
     // need to show this on the page somewhere maybe a pop up module or something
-    
+    setHistoryModal(true)
+    console.log('this run')
+    console.log('history', historyModal)
+
   }
 
   const equalsClickHandler = () => {
     // tmp varible used to convert input so eval can read
-    let tmpResult = dispResult
+    let tmpResult = String(dispResult)
 
     // anytime user hits enter it's saved to history should i make all or just 1 instance? 
     // setHistory(history + ' , ' + tmpResult )
-
+    console.log('this is tmp', tmpResult)
     if (tmpResult.includes('x')){
       tmpResult = tmpResult.replace('x', '*')
     }
     if (tmpResult.includes('^')){
       tmpResult = tmpResult.replace('^', '**')
     }
-
-    try {
-      let ans = eval(tmpResult)
-      setDispResult(ans)
-      setCurrentNum(ans)
-      setHistory([...history, tmpResult + ' = ' + ans])
-    } catch (error) {
-      setDispResult("Error")
+    if (tmpResult !=='Error'){
+      try {
+        let ans = eval(tmpResult)
+        setDispResult(ans)
+        setCurrentNum(ans)
+        setHistory([...history, tmpResult + ' = ' + ans])
+      } catch (error) {
+        setDispResult("Error")
+      }
     }
+  
   };
   
   const specialClickHandler = (e) => {
@@ -114,6 +122,7 @@ const App = () => {
   return (
     <>
       <NavBar></NavBar>
+      <Modal open={historyModal} onClose={() => setHistoryModal(false)} historyArr ={history}/> 
       <Wrapper>
       <Screen value={dispResult ? dispResult : 0} />
         <ButtonBox>
