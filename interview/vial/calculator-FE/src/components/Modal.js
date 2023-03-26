@@ -7,21 +7,21 @@ const Modal = ({ open, onClose, historyArr}) => {
   return (
     <div onClick={onClose} className='overlay'>
     <div
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-      className='modalContainer'
+      // onClick={(e) => {
+      //   e.stopPropagation();
+      // }}
+      // className='modalContainer'
     >
       
-      <div className='modalRight'>
-        <p className='closeBtn' onClick={onClose}>
+      <div className='innerOverlay'>
+        <p className='close' onClick={onClose}>
           X
         </p>
         <p className="title">History</p>
-        <div className='content'>
-          <p>{historyArr.map((single)=>{
-              return (<p>{single}</p>)
-          })}</p>
+        <div >
+          {historyArr.map((single)=>{
+              return (<p className="content">{single}</p>)
+          })}
         
         </div>
        

@@ -9,6 +9,27 @@
   color: white;
   }
 
-  .title {
-    text-align: center;
+  .innerOverlay {
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #4357692d;
+    height: 500px;
+    overflow: auto
   }
+  .title {
+    font-size: 24px;
+    text-align: center;
+    text-decoration: underline;
+  }
+
+  .close:hover {
+    color: red;
+  }
+
+  .content{
+    text-align: center;
+    font-size: 24px;
+    background-color: rgb(80, 60, 209);
+    border-radius: 10px;
+  }
+  
