@@ -7,8 +7,19 @@
   text-align: center;
   display: flex;
   justify-content: left;
-  background: #1abc9c;
+  background-color: #485461;
+  background-image: linear-gradient(315deg, #485461 0%, #28313b 74%);
   color: white;
   font-size: 15px;
   width: 1000%;
+}
+
+.signButtons{
+  display: flex;
+  flex-direction: row;
+}
+
+.buttons{
+
+  margin: 10px;
 }

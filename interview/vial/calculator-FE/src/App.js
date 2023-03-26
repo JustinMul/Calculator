@@ -19,20 +19,27 @@ const btnValues = [
 
 const App = () => {
   
-  let [currentNum, setCurrentNum] = useState('')
-  let [dispResult, setDispResult] = useState('')
-  let [calcMem, setCalcMem] = useState('')
-  let [history, setHistory] = useState([])
+  const [currentNum, setCurrentNum] = useState('')
+  const [dispResult, setDispResult] = useState('')
+
+  const [calcMem, setCalcMem] = useState('')
+  const [history, setHistory] = useState([])
   const [historyModal, setHistoryModal]  = useState(false)
+
+  const [logInStatus, setLogInStatus] = useState(false)
+
+  // this is going to be user to store some users and allow for new users
+  let dataBase = [ ]
+
 
   const memoryHandler = (e) => {
     e.preventDefault();
    
     if (e.target.innerHTML === "M+") { 
-      setCalcMem(calcMem=Number(calcMem) + Number (currentNum))
+      setCalcMem(Number(calcMem) + Number (currentNum))
     }
     if (e.target.innerHTML === "M-") { 
-      setCalcMem(calcMem=Number(calcMem) - Number (currentNum))
+      setCalcMem(Number(calcMem) - Number (currentNum))
     }
     if (e.target.innerHTML === "MC") { 
       setCalcMem(0)
@@ -45,9 +52,6 @@ const App = () => {
   const historyHandler = () => {
     // need to show this on the page somewhere maybe a pop up module or something
     setHistoryModal(true)
-    console.log('this run')
-    console.log('history', historyModal)
-
   }
 
   const equalsClickHandler = () => {
@@ -56,7 +60,6 @@ const App = () => {
 
     // anytime user hits enter it's saved to history should i make all or just 1 instance? 
     // setHistory(history + ' , ' + tmpResult )
-    console.log('this is tmp', tmpResult)
     if (tmpResult.includes('x')){
       tmpResult = tmpResult.replace('x', '*')
     }
@@ -121,7 +124,7 @@ const App = () => {
   
   return (
     <>
-      <NavBar></NavBar>
+      <NavBar logInStatus={logInStatus} setLogInStatus={setLogInStatus}></NavBar>
       <Modal open={historyModal} onClose={() => setHistoryModal(false)} historyArr ={history}/> 
       <Wrapper>
       <Screen value={dispResult ? dispResult : 0} />
@@ -134,7 +137,6 @@ const App = () => {
                   className={btn === "=" ? "equals" : ""}
                   value={btn}
                   onClick={
-                  
                       btn === "C"
                       ? resetClickHandler
                       : btn === "%" || btn === '+-' || btn === '√'
@@ -148,7 +150,6 @@ const App = () => {
                       : btn === "HIS"
                       ? historyHandler
                       : dispResultAppend 
-
                   }
                 />
               );
