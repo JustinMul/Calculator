@@ -5,7 +5,9 @@ const NavBar = ({logInStatus, setLogInStatus})=>{
 
   const [navState, setNavState] = useState(0)
 
-
+  const resetNavState = () => {
+    setNavState(0)
+  }
 
   const signIn = ()=> {
     setNavState(1)
@@ -15,6 +17,13 @@ const NavBar = ({logInStatus, setLogInStatus})=>{
     setNavState(2)
   }
 
+  const handleSubmit = (e) => {
+   
+    e.preventDefault();
+    let { uname, pass } =  document.forms[0]
+    console.log('this is uname', uname.value, pass.value)
+  };
+
 return (
   <>
     
@@ -22,10 +31,13 @@ return (
 
       {navState === 1 ? 
       <div>
-        <div>Sign In</div>
-        <input placeholder="User Name"></input>
-        <input type='password' placeholder="Pass Word " ></input>
-        <button > Log In </button>
+        <form onSubmit={handleSubmit}>
+          <div>Sign In</div>
+          <input type ='text' name='uname' placeholder="User Name"></input>
+          <input type='password' name ='pass' placeholder="Pass Word" required></input>
+          <input type='submit'/>
+          <button onClick={resetNavState}>Cancel</button>
+        </form>
       </div>
       
       :
@@ -33,10 +45,13 @@ return (
       
       {navState === 2 ? 
         <div>
-        <div>Sign Up</div>
-        <input placeholder="User Name"></input>
-        <input type='password' placeholder="Pass Word " ></input>
-        <button> Sign Up </button>
+        <form onSubmit={handleSubmit}>
+          <div>Sign Up</div>
+          <input placeholder="User Name"></input>
+          <input type='password' placeholder="Pass Word " ></input>
+          <input type='submit'/>
+          <button onClick={resetNavState}>Cancel</button>
+        </form>
       </div>
       :
       ""}

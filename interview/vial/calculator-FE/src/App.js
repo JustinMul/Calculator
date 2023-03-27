@@ -27,9 +27,19 @@ const App = () => {
   const [historyModal, setHistoryModal]  = useState(false)
 
   const [logInStatus, setLogInStatus] = useState(false)
+  const [errorMessages, setErrorMessages] = useState({});
 
   // this is going to be user to store some users and allow for new users
-  let dataBase = [ ]
+  let dataBase = [ 
+    {
+    userName: 'joe@gmail.com', 
+    password: 'password'
+    },
+    {
+      userName: 'luffy@gmail.com', 
+      password: 'password'  
+    }
+  ]
 
 
   const memoryHandler = (e) => {
@@ -120,6 +130,7 @@ const App = () => {
     }
    
   }
+
 
   
   return (
