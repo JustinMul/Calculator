@@ -16,7 +16,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-#PLEASE NOTE
+## PLEASE NOTE
 This project was created without a backend & database, meaning the login and calculator history is only temporary and all data will be reset upon reload the application
 
 ### `npm test`
