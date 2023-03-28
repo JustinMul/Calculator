@@ -27,10 +27,9 @@ const App = () => {
   const [historyModal, setHistoryModal]  = useState(false)
 
   const [logInStatus, setLogInStatus] = useState(false)
-  const [errorMessages, setErrorMessages] = useState({});
+  const [currentUser, setCurrentUser] = useState('')
 
-  // this is going to be user to store some users and allow for new users
-  let dataBase = [ 
+  const [dataBase,setDataBase] = useState([ 
     {
     userName: 'joe@gmail.com', 
     password: 'password'
@@ -38,8 +37,7 @@ const App = () => {
     {
       userName: 'luffy@gmail.com', 
       password: 'password'  
-    }
-  ]
+    }])
 
 
   const memoryHandler = (e) => {
@@ -132,10 +130,37 @@ const App = () => {
   }
 
 
+  const userValidation = (userName, password) => {
+    const userData = dataBase.find((user) => user.userName === userName);
+    if (userData) {
+      if (userData.password !== password) {
+        alert('username or password is incorrect ')
+        // Invalid password
+      } else {
+        setLogInStatus(true);
+        setCurrentUser(userData.userName)
+      }
+    } else {
+      alert('username or password is incorrect ')
+      // Username not found
+    }
+  }
+
+  const createNewUser = (userName, password)=>{
+    if (dataBase.find((user) => user.userName === userName)){
+      alert("this User Name already exists!")
+    }
+    else {
+      alert("User has been successful created, please sign in")
+      setDataBase([...dataBase,{userName: userName, 
+        password: password}])
+    }
+    
+  }
   
   return (
     <>
-      <NavBar logInStatus={logInStatus} setLogInStatus={setLogInStatus}></NavBar>
+      <NavBar logInStatus={logInStatus} setLogInStatus={setLogInStatus} userValidation={userValidation} currentUser={currentUser} setCurrentUser={setCurrentUser} createNewUser={createNewUser}></NavBar>
       <Modal open={historyModal} onClose={() => setHistoryModal(false)} historyArr ={history}/> 
       <Wrapper>
       <Screen value={dispResult ? dispResult : 0} />

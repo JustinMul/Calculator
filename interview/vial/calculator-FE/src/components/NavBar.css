@@ -20,6 +20,32 @@
 }
 
 .buttons{
-
   margin: 10px;
 }
+
+.subForm{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.subText{
+  margin: 10px;
+}
+
+.subButton{
+ font-size: 15px;
+ border: none;
+ background-color: rgb(80, 60, 209);
+ 
+ color: rgb(255, 255, 255);
+ font-weight: bold;
+ cursor: pointer;
+ border-radius: 10px;
+ outline: none;
+ margin-left: 5px;
+}
+.subButton:hover{
+  background-color: rgb(34, 25, 91);
+}
+

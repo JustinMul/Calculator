@@ -6,13 +6,7 @@ const Modal = ({ open, onClose, historyArr}) => {
   
   return (
     <div onClick={onClose} className='overlay'>
-    <div
-      // onClick={(e) => {
-      //   e.stopPropagation();
-      // }}
-      // className='modalContainer'
-    >
-      
+    <div>
       <div className='innerOverlay'>
         <p className='close' onClick={onClose}>
           X
