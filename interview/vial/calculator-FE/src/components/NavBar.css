@@ -17,6 +17,7 @@
 .signButtons{
   display: flex;
   flex-direction: row;
+  
 }
 
 .buttons{
@@ -27,6 +28,16 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+@media only screen and (max-width: 600px){
+  .subForm{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+   
+  }
+ 
 }
 
 .subText{
